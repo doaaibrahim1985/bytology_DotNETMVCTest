@@ -1,0 +1,166 @@
+﻿
+@{
+    ViewBag.Title = "blog";
+}
+
+
+<div class="container">
+    <div class="row">
+        @if (ViewBag.blog != null)
+        {
+            <!-- Blog post content -->
+        <div class="col-lg-12">
+
+            <!-- Title -->
+            <h1 class="mt-4">@ViewBag.blog.title</h1>
+
+            <hr>
+
+            <!-- Date/Time -->
+            <p>@ViewBag.blog.date</p>
+
+            <hr>
+
+            <!-- Preview Image -->
+            <img class="img-fluid rounded" src="@ViewBag.blog.image" alt="@ViewBag.blog.title">
+
+            <hr id="content">
+
+            <!-- Post Content -->
+            @Html.Raw(@ViewBag.blog.htmlContent)
+
+
+            <hr>
+            @using (Html.BeginForm("blog", "home"))
+        
+            {
+                <!-- Blog post comment form -->
+                <div class="card my-4">
+                    <h5 class="card-header">Leave a Comment:</h5>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="Name">Name</label>
+                                <input type="text" class="form-control" required name="Name" placeholder="Name" oninvalid="this.setCustomValidity('Enter Name Here')" oninput="this.setCustomValidity('')"/>
+
+                                <input type="number" hidden class="form-control" id="Id" name="Id" value=@ViewBag.blog.id>
+
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="EmailAddress">Email Address</label>
+                                <input type="email" class="form-control" id="EmailAddress" required name="EmailAddress" placeholder="Email Address"oninvalid="this.setCustomValidity('Enter email here')" oninput="this.setCustomValidity('')"/>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Message">Message</label>
+                            <textarea id="Message" name="Message" required class="form-control" rows="3"oninvalid="this.setCustomValidity('Enter message Here')" oninput="this.setCustomValidity('')"></textarea>
+                        </div>
+                        <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+
+                    </div>
+
+                </div>
+            }
+            <!-- Blog post comments -->
+
+            @if (ViewBag.blog.comments != null)
+            {
+
+                <ul style="list-style-type: none;">
+                    @foreach (var comment in ViewBag.blog.comments)
+                    {
+
+                        <li>
+                            <div class="media mb-4">
+                                <img class="d-flex mr-3 rounded-circle user-avatar" src="https://eu.ui-avatars.com/api/?name=@comment.name" alt="@comment.name">
+
+                                <div class="media-body">
+                                    <h5 class="mt-0">@comment.name <small><em>(@comment.date)</em></small></h5>
+                                    @comment.message
+                                    <ul style="list-style-type: none; margin-top: 16px">
+                                        @if (comment.replies != null)
+                                        {
+                                            foreach (var reply in comment.replies)
+                                            {
+                                                <li>
+
+                                                    <div class="media mb-4 ">
+                                                        <img class="d-flex mr-3 rounded-circle user-avatar" src="https://eu.ui-avatars.com/api/?name=@reply.name" alt="@reply.name">
+
+                                                        <div class="media-body">
+                                                            <h5 class="mt-0">@reply.name <small><em>(@reply.date)</em></small></h5>
+                                                            @reply.message
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            }
+                                        }
+                                        <li>
+                                            @using (Html.BeginForm("addreply", "home", FormMethod.Post, new { }))
+                                            {
+                                                <div class="card my-4">
+                                                    <h5 class="card-header">Leave a reply:</h5>
+                                                    <div class="card-body">
+                                                        <form>
+                                                            <div class="form-row">
+                                                                <div class="form-group col-md-6">
+                                                                    <label for="Name">Name</label>
+                                                                    <input type="text" class="form-control" id="Name" required name="Name" placeholder="Name" oninvalid="this.setCustomValidity('Enter Name Here')" oninput="this.setCustomValidity('')" />
+
+                                                                    <input type="text" hidden class="form-control" id="date" name="date" value="@comment.date">
+                                                                    <input type="number" hidden class="form-control" id="id" name="id" value="@ViewBag.blog.id">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="Message">Message</label>
+                                                                <textarea id="Message" required name="Message" class="form-control" rows="3" oninvalid="this.setCustomValidity('Enter message Here')" oninput="this.setCustomValidity('')"></textarea>
+                                                            </div>
+                                                            <button type="submit" id="submit" class="btn btn-primary">Reply</button>
+                                                        </form>
+                                                    </div>
+
+                                                </div>
+                                            }
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+
+            }
+
+
+        </div>
+        
+        }
+        
+    </div>
+    
+</div>
+                
+@*<script>
+    $(document).ready(function () {
+
+        $("#btnreply").click(function () {
+
+            var data = $("#replyf").serialize();
+            $.ajax({
+                type: "post",
+                url: "/home/addreply",
+                data: data,
+               
+
+                });
+
+            
+        });
+       
+    });
+</script>*@
+
+
+
